@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 
 const MainContainer = styled.div`
+padding: 20px;
 display: flex;
 justify-content: space-around;
 `
@@ -47,5 +48,14 @@ const PlyersScore = styled.li`
 display: flex;
 justify-content: space-between;
 `
+const ToStartText = styled.p`
+margin-top: revert;
+font-size: 30px;
+font-style: normal;
+font-weight: 500;
+line-height: normal;
+color: #fff;
+text-align: center;
+`
 
-export {MainContainer, ScoreSection, SnakeBorder, SnakeBody, FeedOne, Score, AllScore, PlyersScore }
+export {MainContainer, ScoreSection, ToStartText, SnakeBorder, SnakeBody, FeedOne, Score, AllScore, PlyersScore }

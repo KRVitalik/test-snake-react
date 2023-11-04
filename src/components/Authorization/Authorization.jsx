@@ -1,6 +1,7 @@
 import React from 'react'
 import { useDispatch } from 'react-redux';
 import { plyer } from '../../redux/store';
+import { MainAuthContainer, RegisterForm, RegisterFormButton, RegisterInput, RegisterLabel } from './Authorization.styled';
 
 const Authorization = () => {
 
@@ -17,17 +18,17 @@ const Authorization = () => {
   }
 
   return (
-    <div>
-      <form onSubmit={handleButtonSubmit}>
-        <label >
-          <input placeholder='Name' type="text" name='name' />
-        </label>
-        <label>
-          <input placeholder='Password' type="password" name='password' />
-        </label>
-        <button type='submit'>Play</button>
-    </form>
-    </div>
+    <MainAuthContainer>
+      <RegisterForm onSubmit={handleButtonSubmit}>
+        <RegisterLabel >Enter your name
+          <RegisterInput placeholder='Name' type="text" name='name' />
+        </RegisterLabel>
+        <RegisterLabel>Enter your Password
+          <RegisterInput placeholder='Password' type="password" name='password' />
+        </RegisterLabel>
+        <RegisterFormButton type='submit'>Play</RegisterFormButton>
+      </RegisterForm>
+    </MainAuthContainer>
   )
 };
 

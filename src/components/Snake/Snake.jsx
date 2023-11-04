@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { SnakeBorder, SnakeBody, FeedOne, Score, MainContainer, ScoreSection, AllScore, PlyersScore } from './Snake.styled'
+import { SnakeBorder, SnakeBody, FeedOne, Score, MainContainer, ScoreSection, AllScore, PlyersScore, ToStartText } from './Snake.styled'
 import { createPlyer, getPlyer } from '../API_Snake/API_Snake';
 import Authorization from '../Authorization/Authorization';
 import { useSelector } from 'react-redux';
@@ -18,9 +18,10 @@ const Snake = () => {
   const [leftBody, setLeftBody] = useState(0);
   const [topBody, setTopBody] = useState(0);
   
-const name = useSelector(state => (state.myPlyer.name))
-  const password = useSelector(state => (state.myPlyer.password))
+const plyer = useSelector(state => (state.myPlyer))
   
+const {name, password} = plyer
+
   function randomFeed() {
     let feed = Math.floor(Math.random() * 10) + 1;
     let coordinateLeft = Math.floor(Math.random() * 50) * 20;
@@ -40,12 +41,17 @@ const name = useSelector(state => (state.myPlyer.name))
       clearInterval(timerId);
       createPlyer({ name, password, score })
       getAllPlyer()
+      setLeft(20)
+      setTop(20)
+      setScore(0)
+
     };
   }, [left, name, password, score, timerId, top]);
 
-  function getAllPlyer() {
-    return getPlyer().then((resp) => setPlyerArray(resp))
-  }
+  async function getAllPlyer() {
+    const resp = await getPlyer();
+    return setPlyerArray(resp);
+  };
   
   useEffect(() => {
     if (plyerArray.length === 0 && name) { getAllPlyer() }
@@ -115,11 +121,12 @@ const name = useSelector(state => (state.myPlyer.name))
     };
     window.addEventListener("keydown", snakeMove)
     return () => window.removeEventListener('keydown', snakeMove)
-  }, [currentFeed, left, leftFeed, score, snakeSpeed, timerId, top, topFeed]);
+  }, [currentFeed, left, leftFeed, name, password, score, snakeSpeed, timerId, top, topFeed]);
 
   return (
     <MainContainer>
       <SnakeBorder>
+        {name && password ? <div>
         <SnakeBody
           style={{
             top: `${topBody}px`,
@@ -135,7 +142,7 @@ const name = useSelector(state => (state.myPlyer.name))
           style={{
             top: `${topFeed}px`,
             left: `${leftFeed}px`,
-          }}></FeedOne>
+          }}></FeedOne></div> : <ToStartText>Enter your name and password to play game</ToStartText>}
       </SnakeBorder>
       {(!name)
         ? <Authorization />
