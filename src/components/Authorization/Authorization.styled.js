@@ -5,15 +5,15 @@ padding: 20px;
 `
 
 const RegisterInput = styled.input`
-width: 451px;
-height: 57px;
+max-width: 351px;
+height: 27px;
 flex-shrink: 0;
 border-radius: 9px;
 border: 1px solid #ADADAD;
 background: #FFF;
 color: #808080;
 font-family: Poppins;
-font-size: 30px;
+font-size: 18px;
 font-style: normal;
 font-weight: 300;
 line-height: normal;

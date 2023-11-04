@@ -15,8 +15,10 @@ padding: 20px;
 
 const SnakeBorder = styled.div`
 background-color: teal;
-width: 1000px;
-height: 1000px;
+width: 500px;
+height: 500px;
+min-width: 500px;
+min-height: 500px;
 position: relative;
 `
 

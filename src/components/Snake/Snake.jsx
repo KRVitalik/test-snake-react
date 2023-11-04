@@ -126,7 +126,7 @@ const {name, password} = plyer
   return (
     <MainContainer>
       <SnakeBorder>
-        {name && password ? <div>
+        {name !== undefined && password !== undefined ? <div>
         <SnakeBody
           style={{
             top: `${topBody}px`,
