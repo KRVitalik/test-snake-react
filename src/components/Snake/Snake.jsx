@@ -33,8 +33,13 @@ const {name, password, id} = plyer
       setCurrentFeed(5)
     } else if ((feed <= 10 && feed > 8)) { setCurrentFeed(10) }
   }
-  
-  useEffect(() => {
+
+  async function getAllPlyer() {
+    const resp = await getPlyer();
+    return setPlyerArray(resp);
+  };
+
+    useEffect(() => {
     if (top === 500 || left === 500 || top === -20 || left === -20) {
       clearInterval(timerId);
       updatePlyer({ score, id })
@@ -46,11 +51,6 @@ const {name, password, id} = plyer
 
     };
   }, [id, left, name, password, score, timerId, top]);
-
-  async function getAllPlyer() {
-    const resp = await getPlyer();
-    return setPlyerArray(resp);
-  };
   
   useEffect(() => {
     if (plyerArray.length === 0 && name) { getAllPlyer() }
