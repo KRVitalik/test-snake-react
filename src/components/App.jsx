@@ -6,8 +6,7 @@ import { Route, Routes } from 'react-router-dom'
 const App = () => {
   return (
     <Routes>
-        {/* <Route index element={ <Snake/> } /> */}
-        <Route path="/" element={<Snake />} />
+      <Route path="/" element={<Snake />} />
     </Routes>
   )
 }

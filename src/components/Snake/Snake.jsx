@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { SnakeBorder, SnakeBody, FeedOne, Score, MainContainer, ScoreSection, AllScore, PlyersScore, ToStartText } from './Snake.styled'
-import { createPlyer, getPlyer } from '../API_Snake/API_Snake';
+import { getPlyer, updatePlyer } from '../API_Snake/API_Snake';
 import Authorization from '../Authorization/Authorization';
 import { useSelector } from 'react-redux';
 
@@ -14,19 +14,16 @@ const Snake = () => {
   const [score, setScore] = useState(0);
   const [snakeSpeed, setSnakeSpeed] = useState(350);
   const [plyerArray, setPlyerArray] = useState([]);
-console.log(snakeSpeed)
   const [leftBody, setLeftBody] = useState(0);
   const [topBody, setTopBody] = useState(0);
   
 const plyer = useSelector(state => (state.myPlyer))
   
-const {name, password} = plyer
-
+const {name, password, id} = plyer
   function randomFeed() {
     let feed = Math.floor(Math.random() * 10) + 1;
     let coordinateLeft = Math.floor(Math.random() * 25) * 20;
     let coordinateTop = Math.floor(Math.random() * 25) * 20;
-    console.log(coordinateLeft, coordinateTop)
     setLeftFeed(coordinateLeft)
     setTopFeed(coordinateTop)
 
@@ -40,14 +37,15 @@ const {name, password} = plyer
   useEffect(() => {
     if (top === 500 || left === 500 || top === -20 || left === -20) {
       clearInterval(timerId);
-      createPlyer({ name, password, score })
+      updatePlyer({ score, id })
+
       getAllPlyer()
       setLeft(20)
       setTop(20)
       setScore(0)
 
     };
-  }, [left, name, password, score, timerId, top]);
+  }, [id, left, name, password, score, timerId, top]);
 
   async function getAllPlyer() {
     const resp = await getPlyer();

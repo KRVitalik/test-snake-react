@@ -2,18 +2,20 @@ import React from 'react'
 import { useDispatch } from 'react-redux';
 import { plyer } from '../../redux/store';
 import { MainAuthContainer, RegisterForm, RegisterFormButton, RegisterInput, RegisterLabel } from './Authorization.styled';
+import { createPlyer } from '../API_Snake/API_Snake';
 
 const Authorization = () => {
 
   const dispatch = useDispatch()
 
-  const handleButtonSubmit = (e) => {
+  const handleButtonSubmit = async (e) => {
     e.preventDefault()
     const formData = {
       name: e.currentTarget.elements.name.value,
       password: e.currentTarget.elements.password.value
     }
-    dispatch(plyer(formData))
+    const currentPlyer = await createPlyer({...formData, score:0})
+    dispatch(plyer(currentPlyer))
     e.target.reset()
   }
 

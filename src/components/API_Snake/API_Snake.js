@@ -5,7 +5,6 @@ axios.defaults.baseURL = process.env.REACT_APP_API_URL;
 export const getPlyer = async () => {
     try {
         const { data } = await axios.get('user');
-        console.log(data)
         return data
     } catch (error) {
         throw error;
@@ -13,7 +12,12 @@ export const getPlyer = async () => {
 }
 
 export const createPlyer = async (plyer) => {
-    console.log(plyer)
     const { data } = await axios.post(`user`, plyer)
     return await data
 }
+
+export const updatePlyer = async (update) => {
+    const { data } = await axios.put(`user/${update.id}`, update)
+    return await data
+}
+
