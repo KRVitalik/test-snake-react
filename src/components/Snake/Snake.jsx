@@ -7,14 +7,14 @@ import { useSelector } from 'react-redux';
 const Snake = () => {
   const [left, setLeft] = useState(20);
   const [top, setTop] = useState(20);
-  const [leftFeed, setLeftFeed] = useState(400);
-  const [topFeed, setTopFeed] = useState(400);
+  const [leftFeed, setLeftFeed] = useState(200);
+  const [topFeed, setTopFeed] = useState(200);
   const [timerId, setTimerId] = useState(null);
   const [currentFeed, setCurrentFeed] = useState(1);
   const [score, setScore] = useState(0);
   const [snakeSpeed, setSnakeSpeed] = useState(350);
   const [plyerArray, setPlyerArray] = useState([]);
-
+console.log(snakeSpeed)
   const [leftBody, setLeftBody] = useState(0);
   const [topBody, setTopBody] = useState(0);
   
@@ -24,8 +24,9 @@ const {name, password} = plyer
 
   function randomFeed() {
     let feed = Math.floor(Math.random() * 10) + 1;
-    let coordinateLeft = Math.floor(Math.random() * 50) * 20;
-    let coordinateTop = Math.floor(Math.random() * 50) * 20;
+    let coordinateLeft = Math.floor(Math.random() * 25) * 20;
+    let coordinateTop = Math.floor(Math.random() * 25) * 20;
+    console.log(coordinateLeft, coordinateTop)
     setLeftFeed(coordinateLeft)
     setTopFeed(coordinateTop)
 
@@ -37,7 +38,7 @@ const {name, password} = plyer
   }
   
   useEffect(() => {
-    if (top === 1000 || left === 1000 || top === -20 || left === -20) {
+    if (top === 500 || left === 500 || top === -20 || left === -20) {
       clearInterval(timerId);
       createPlyer({ name, password, score })
       getAllPlyer()
@@ -70,6 +71,9 @@ const {name, password} = plyer
     }
     elementAdd()
     const snakeMove = (e) => {
+      if (!name || !password) {
+      return
+    }
       if (timerId) {
         clearInterval(timerId)
       }
@@ -126,7 +130,8 @@ const {name, password} = plyer
   return (
     <MainContainer>
       <SnakeBorder>
-        {name !== undefined && password !== undefined ? <div>
+        {(!name || !password) ? <ToStartText>Enter your name and password to play game</ToStartText>
+        : <div>
         <SnakeBody
           style={{
             top: `${topBody}px`,
@@ -142,9 +147,9 @@ const {name, password} = plyer
           style={{
             top: `${topFeed}px`,
             left: `${leftFeed}px`,
-          }}></FeedOne></div> : <ToStartText>Enter your name and password to play game</ToStartText>}
+          }}></FeedOne></div>}
       </SnakeBorder>
-      {(!name)
+      {(!name || !password)
         ? <Authorization />
         : <ScoreSection>
         <Score>{score}</Score>
