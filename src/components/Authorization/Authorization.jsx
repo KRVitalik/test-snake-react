@@ -3,9 +3,9 @@ import { useDispatch } from 'react-redux';
 import { plyer } from '../../redux/store';
 import { MainAuthContainer, RegisterForm, RegisterFormButton, RegisterInput, RegisterLabel } from './Authorization.styled';
 import { createPlyer } from '../API_Snake/API_Snake';
+import { Notify } from 'notiflix/build/notiflix-notify-aio';
 
 const Authorization = () => {
-
   const dispatch = useDispatch()
 
   const handleButtonSubmit = async (e) => {
@@ -14,9 +14,11 @@ const Authorization = () => {
       name: e.currentTarget.elements.name.value,
       password: e.currentTarget.elements.password.value
     }
-    const currentPlyer = await createPlyer({...formData, score:0})
+    const currentPlyer = await createPlyer({ ...formData, score: 0 })
+      .catch(error => Notify.warning(error.response.data.message))
     dispatch(plyer(currentPlyer))
     e.target.reset()
+    
   }
 
   return (

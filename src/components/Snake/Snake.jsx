@@ -5,8 +5,6 @@ import Authorization from '../Authorization/Authorization';
 import { useSelector } from 'react-redux';
 
 const Snake = () => {
-  const [left, setLeft] = useState(20);
-  const [top, setTop] = useState(20);
   const [leftFeed, setLeftFeed] = useState(200);
   const [topFeed, setTopFeed] = useState(200);
   const [timerId, setTimerId] = useState(null);
@@ -14,9 +12,10 @@ const Snake = () => {
   const [score, setScore] = useState(0);
   const [snakeSpeed, setSnakeSpeed] = useState(350);
   const [plyerArray, setPlyerArray] = useState([]);
-  const [leftBody, setLeftBody] = useState(0);
-  const [topBody, setTopBody] = useState(0);
-  
+  const [snakeBodyLength, setSnakeBodyLength] = useState([{ top: 20, left: 20 }]);
+
+const {top, left} = snakeBodyLength[0]
+
 const plyer = useSelector(state => (state.myPlyer))
   
 const {name, password, id} = plyer
@@ -32,42 +31,58 @@ const {name, password, id} = plyer
     } else if (feed <= 8 && feed > 4) {
       setCurrentFeed(5)
     } else if ((feed <= 10 && feed > 8)) { setCurrentFeed(10) }
-  }
+  };
 
   async function getAllPlyer() {
     const resp = await getPlyer();
     return setPlyerArray(resp);
   };
 
-    useEffect(() => {
-    if (top === 500 || left === 500 || top === -20 || left === -20) {
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  function dropScore() {
       clearInterval(timerId);
       updatePlyer({ score, id })
-
       getAllPlyer()
-      setLeft(20)
-      setTop(20)
+      setSnakeBodyLength([{ top: 20, left: 20 }])
       setScore(0)
+      setSnakeSpeed(350)
+  };
 
+    useEffect(() => {
+    if (top === 500 || left === 500 || top === -20 || left === -20) {
+      dropScore()
+      };
+      if (plyerArray.length === 0 && name) { getAllPlyer() }
+  }, [dropScore, id, left, name, password, plyerArray.length, score, snakeBodyLength, snakeBodyLength.left, snakeBodyLength.top, timerId, top]);
+  
+  snakeBodyLength.forEach((body, index) => {
+    if (index !== 0 && index !== 1 && top === body.top && left === body.left) {
+      dropScore()
+    }
+  });
+  
+  useEffect(() => {
+    function addSnakeSegment() {
+      const lastSegment = snakeBodyLength[snakeBodyLength.length - 1];
+      const newSegment = { top: lastSegment.top, left: lastSegment.left };
+
+      setSnakeBodyLength(prevBody => {
+        const newBody = [...prevBody];
+        newBody.push(newSegment);
+        return newBody;
+      });
     };
-  }, [id, left, name, password, score, timerId, top]);
-  
-  useEffect(() => {
-    if (plyerArray.length === 0 && name) { getAllPlyer() }
-  }, [plyerArray.length, name])
-  
-  
-  useEffect(() => {
-    function elementAdd() {
-      if (left === leftFeed && top === topFeed) {
-        randomFeed()
-        setScore(prevScore => prevScore + currentFeed)
-        if (score % 50 === 0) {
-          setSnakeSpeed(prevSpeed => prevSpeed - 10)
-        }
+
+    if (left === leftFeed && top === topFeed) {
+      randomFeed()
+      setScore(prevScore => prevScore + currentFeed)
+      addSnakeSegment()
+
+      if (score % 50 === 0) {
+        setSnakeSpeed(prevSpeed => prevSpeed - 10)
       }
     }
-    elementAdd()
+
     const snakeMove = (e) => {
       if (!name || !password) {
       return
@@ -78,44 +93,84 @@ const {name, password, id} = plyer
       switch (e.code) {
         case 'ArrowUp':
           if (top > 0) {
-            setLeftBody(left)
-            setTopBody(top + 20)
             setTimerId(setInterval(() => {
-              setTop(prevTop => prevTop - 20)
-              setTopBody(prevLeft => prevLeft - 20)
-            }, snakeSpeed))
+      setSnakeBodyLength((prevBody) => {
+        const newBody = prevBody.map((segment, index) => {
+          if (index === 0) {
+            const newTop = segment.top - 20;
+            const newLeft = segment.left;
+            return { top: newTop, left: newLeft };
+          } else {
+            const newTop = prevBody[index - 1].top;
+            const newLeft = prevBody[index - 1].left;
+            return { top: newTop, left: newLeft };
           }
-          break;
+        });
+        return newBody;
+      });
+    }, snakeSpeed));
+  }
+  break;
         case 'ArrowDown':
-          if (top < 880) {
-            setLeftBody(left)
-            setTopBody(top - 20)
+          if (top < 500) {
             setTimerId(setInterval(() => {
-              setTop((prevTop) => prevTop + 20)
-              setTopBody(prevLeft => prevLeft + 20)
-            }, snakeSpeed))
+      setSnakeBodyLength((prevBody) => {
+        const newBody = prevBody.map((segment, index) => {
+          if (index === 0) {
+            const newTop = segment.top + 20;
+            const newLeft = segment.left;
+            return { top: newTop, left: newLeft };
+          } else {
+            const newTop = prevBody[index - 1].top;
+            const newLeft = prevBody[index - 1].left;
+            return { top: newTop, left: newLeft };
           }
-          break;
+        });
+        return newBody;
+      });
+    }, snakeSpeed));
+  }
+  break;
         case 'ArrowRight':
-          if (left < 1120) {
-            setLeftBody(left - 20)
-            setTopBody(top)
+          if (left < 500) {
             setTimerId(setInterval(() => {
-              setLeft(prevLeft => prevLeft + 20)
-              setLeftBody(prevLeft => prevLeft + 20)
-            }, snakeSpeed))
+      setSnakeBodyLength((prevBody) => {
+        const newBody = prevBody.map((segment, index) => {
+          if (index === 0) {
+            const newTop = segment.top;
+            const newLeft = segment.left + 20;
+            return { top: newTop, left: newLeft };
+          } else {
+            const newTop = prevBody[index - 1].top;
+            const newLeft = prevBody[index - 1].left;
+            return { top: newTop, left: newLeft };
           }
-          break;
+        });
+        return newBody;
+      });
+    }, snakeSpeed));
+  }
+  break;
         case 'ArrowLeft':
           if (left > 0) {
-            setLeftBody(left + 20)
-            setTopBody(top)
-            setTimerId(setInterval(() => {
-              setLeft(prevLeft => prevLeft - 20)
-              setLeftBody(prevLeft => prevLeft - 20)
-            }, snakeSpeed))
+setTimerId(setInterval(() => {
+      setSnakeBodyLength((prevBody) => {
+        const newBody = prevBody.map((segment, index) => {
+          if (index === 0) {
+            const newTop = segment.top;
+            const newLeft = segment.left - 20;
+            return { top: newTop, left: newLeft };
+          } else {
+            const newTop = prevBody[index - 1].top;
+            const newLeft = prevBody[index - 1].left;
+            return { top: newTop, left: newLeft };
           }
-          break;
+        });
+        return newBody;
+      });
+    }, snakeSpeed));
+          }
+  break;
         default:
           break;
       }
@@ -123,24 +178,20 @@ const {name, password, id} = plyer
     };
     window.addEventListener("keydown", snakeMove)
     return () => window.removeEventListener('keydown', snakeMove)
-  }, [currentFeed, left, leftFeed, name, password, score, snakeSpeed, timerId, top, topFeed]);
+  }, [currentFeed, left, leftFeed, name, password, score, snakeBodyLength, snakeSpeed, timerId, top, topFeed]);
 
   return (
     <MainContainer>
       <SnakeBorder>
         {(!name || !password) ? <ToStartText>Enter your name and password to play game</ToStartText>
-        : <div>
-        <SnakeBody
+          : <div>
+            {snakeBodyLength.map((body) => <SnakeBody key={Math.random()}
+              
           style={{
-            top: `${topBody}px`,
-            left: `${leftBody}px`,
-          }}></SnakeBody>
-        <SnakeBody
-          style={{
-            top: `${top}px`,
-            left: `${left}px`,
-            backgroundColor: 'black'
-          }}></SnakeBody>
+            top: `${body.top}px`,
+            left: `${body.left}px`,
+            border: '1px solid black',
+          }}></SnakeBody>)}
         <FeedOne
           style={{
             top: `${topFeed}px`,
@@ -158,7 +209,6 @@ const {name, password, id} = plyer
           </PlyersScore>)}
           </AllScore>
       </ScoreSection>}
-      
     </MainContainer>
   )
 };

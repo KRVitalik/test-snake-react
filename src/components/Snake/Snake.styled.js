@@ -60,4 +60,14 @@ color: #fff;
 text-align: center;
 `
 
-export {MainContainer, ScoreSection, ToStartText, SnakeBorder, SnakeBody, FeedOne, Score, AllScore, PlyersScore }
+export {
+    MainContainer,
+    ScoreSection,
+    ToStartText,
+    SnakeBorder,
+    SnakeBody,
+    FeedOne,
+    Score,
+    AllScore,
+    PlyersScore
+}
